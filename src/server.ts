@@ -23,7 +23,7 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
         });
       });
     } else {res.status(404).send("The URL cannot found");
-    }}catch (Exception){res.status(404).send("The URL can not Found");}
+    }}catch (Exception){res.status(404).send("The URL cannot Found");}
   });
   
   // // Root Endpoint
