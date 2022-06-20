@@ -1,11 +1,11 @@
-import express from 'express';
+import express, { Express } from 'express';
 import bodyParser from 'body-parser';
 import {filterImageFromURL, deleteLocalFiles} from './util/util';
 
 (async () => {
 
   // Init the Express application
-  const app = express();
+  const app:Express = express();
 
   // Set the network port
   const port = process.env.PORT || 8082;
@@ -13,23 +13,24 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   // Use the body parser middleware for post requests
   app.use(bodyParser.json());
 
-  app.get("/filteredimage", async ( req, res ) => {
-    let url = req.query.image_url;
-    try {if (url !== "") {
-      await filterImageFromURL(url).then((response)=> {
-        res.sendFile(response);
+  app.get("/filteredimage", async ( req:express.Request, res:express.Response ) => {
+//    let url = req.query.image_url;
+    const { image_url } : { image_url: string } = req.query;
+    try {if (image_url !== "") {
+      await filterImageFromURL(image_url).then((response)=> {
+        res.status(200).sendFile(response);
         res.on('Completed, now deleting response', function() {
           deleteLocalFiles([response]);
         });
       });
-    } else {res.status(404).send("The URL cannot found");
-    }}catch (Exception){res.status(404).send("The URL cannot Found");}
+    } else {res.status(404).send("The URL cannot be found");
+    }}catch (Exception){res.status(404).send("The URL cannot be Found");}
   });
   
   // // Root Endpoint
   // // Displays a simple message to the user
-  app.get( "/", async ( req, res ) => {
-    res.send("try GET /filteredimage?image_url={{}}")
+  app.get( "/", async ( req:express.Request, res:express.Response ) => {
+    res.status(200).send("try GET /filteredimage?image_url={{}}")
   } );
   
 
